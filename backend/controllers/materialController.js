@@ -10,7 +10,7 @@ const path = require('path');
 const { supabase } = require('../config/supabase');
 const { requireFields } = require('../middleware/validate');
 
-const PDF_BUCKET = 'question-pdfs';
+const PDF_BUCKET = 'question_pdfs';
 
 // In this app we store the *object name* in `pdf_url`.
 // The frontend builds the public URL as:
