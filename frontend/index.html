@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campus Question Bank</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar__inner">
+      <a class="brand" href="index.html">Campus Question Bank</a>
+      <nav class="nav">
+        <a href="materials.html">Materials</a>
+        <a href="upload.html">Upload</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero__grid">
+        <div>
+          <h1 class="hero__title">Upload important questions. Students instantly find answers.</h1>
+          <p class="hero__subtitle">Search by subject and download PDFs when available.</p>
+
+          <div class="search">
+            <input id="subjectSearchHome" type="text" placeholder="Search subject (e.g., Data Structures)" />
+            <button id="searchBtnHome" type="button">Search</button>
+          </div>
+
+          <div class="hint">
+            Tip: PDFs are optional—text questions & answers will still be searchable.
+          </div>
+        </div>
+
+        <div class="hero__cards" aria-hidden="true">
+          <div class="stat-card">
+            <div class="stat-card__title">Fast access</div>
+            <div class="stat-card__value">Search & view</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__title">PDF support</div>
+            <div class="stat-card__value">View & download</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__title">Admin upload</div>
+            <div class="stat-card__value">Email-gated</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="section__title">Browse materials</h2>
+        <div class="section__body">
+          <a class="primary-btn" href="materials.html">Open Materials</a>
+          <a class="ghost-btn" href="upload.html">Upload Notes</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <span>© <span id="year"></span> Campus Question Bank</span>
+      <span class="muted">Built with Node.js, Express, Supabase</span>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const input = document.getElementById('subjectSearchHome');
+    document.getElementById('searchBtnHome').addEventListener('click', () => {
+      const q = (input.value || '').trim();
+      const url = new URL('materials.html', window.location.href);
+      if (q) url.searchParams.set('subject', q);
+      window.location.href = url.toString();
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('searchBtnHome').click();
+      }
+    });
+  </script>
+</body>
+</html>
+
