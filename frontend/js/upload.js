@@ -68,7 +68,7 @@ form.addEventListener('submit', async (e) => {
       payload.pdf_file_name = pdfFileName;
     }
 
-    const res = await apiPost('/api/upload', payload, { 'X-Admin-Email': adminEmail });
+    const res = await apiPost('https://campusquestionbank-yyz4.vercel.app/api/upload', payload, { 'X-Admin-Email': adminEmail });
     showMessage(messageEl, res.message || 'Uploaded successfully.', 'success');
     form.reset();
     pdfBase64 = null;
