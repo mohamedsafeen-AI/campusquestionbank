@@ -67,6 +67,18 @@ async function apiPost(path, body, extraHeaders = {}) {
     },
     body: JSON.stringify(body),
   });
+  // 💡 இதை மட்டும் apiPost-க்கு கீழே புதிதாகச் சேர்க்கவும் (பழையதை நீக்க வேண்டாம்)
+
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(json.error || 'Request failed');
+  return json;
+}
+async function apiPostMultipart(path, formData) {
+  const res = await fetch(apiUrl(path), {
+    method: 'POST',
+    body: formData, // 🛑 இங்கு Content-Type ஹெடர் கொடுக்கக் கூடாது!
+  });
+  
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(json.error || 'Request failed');
   return json;
