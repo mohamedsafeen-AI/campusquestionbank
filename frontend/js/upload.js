@@ -1,5 +1,5 @@
 /**
- * Upload page logic (Fixed ID and Key mapping)
+ * Upload page logic - Secured with strict null checks
  */
 
 const form = document.getElementById('uploadForm');
@@ -25,7 +25,7 @@ if (pdfFileInput) {
     }
 
     if (file.type !== 'application/pdf') {
-      showMessage(messageEl, 'Only PDF files are allowed.', 'error');
+      if (messageEl) showMessage(messageEl, 'Only PDF files are allowed.', 'error');
       pdfFileInput.value = '';
       pdfBase64 = null;
       pdfFileName = null;
@@ -36,7 +36,7 @@ if (pdfFileInput) {
     pdfFileName = file.name;
     const reader = new FileReader();
     reader.onload = () => {
-      pdfBase64 = reader.result; // PDF-ஐ Base64 டெக்ஸ்ட்டாக மாற்றுகிறது
+      pdfBase64 = reader.result;
       setPill(`Selected: ${file.name}`);
     };
     reader.readAsDataURL(file);
@@ -46,24 +46,33 @@ if (pdfFileInput) {
 if (form) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    showMessage(messageEl, 'Uploading...', 'info');
+    if (messageEl) showMessage(messageEl, 'Uploading...', 'info');
 
     try {
-      // 💡 உங்களுடைய HTML படிவத்தில் இருக்கும் அசல் ID-களுக்கு ஏற்ப மாற்றப்பட்டுள்ளது:
-      const adminEmail = document.getElementById('adminEmail') ? document.getElementById('adminEmail').value.trim() : 'admin@gmail.com'; // இமெயில் ஃபீல்டு இல்லை என்றால் டிஃபால்ட்
-      const subjectName = document.getElementById('subject').value.trim(); // ID: subject
-      const unitName = document.getElementById('unit').value.trim();       // ID: unit
-      const questions = document.getElementById('questions').value.trim(); // ID: questions
-      const answers = document.getElementById('answers').value.trim();     // ID: answers
+      // 💡 null எர்ரர் வராதபடி பாதுகாப்பாக மதிப்புகளை எடுக்கும் முறை:
+      const adminEmailEl = document.getElementById('adminEmail') || document.getElementById('admin_email');
+      const subjectEl    = document.getElementById('subject') || document.getElementById('subjectName') || document.getElementById('subject_name');
+      const unitEl       = document.getElementById('unit') || document.getElementById('unitName') || document.getElementById('unit_name');
+      const questionsEl  = document.getElementById('questions') || document.getElementById('question');
+      const answersEl    = document.getElementById('answers') || document.getElementById('answer');
+
+      // கட்டாய ஃபீல்டுகள் இருக்கிறதா எனச் சரிபார்த்தல்
+      if (!subjectEl) throw new Error('Subject input element missing in HTML!');
+      
+      const adminEmail = adminEmailEl ? adminEmailEl.value.trim() : 'admin@gmail.com';
+      const subjectName = subjectEl.value.trim();
+      const unitName    = unitEl ? unitEl.value.trim() : '';
+      const questions   = questionsEl ? questionsEl.value.trim() : '';
+      const answers     = answersEl ? answersEl.value.trim() : '';
 
       if (!subjectName) throw new Error('Subject Name is required.');
 
-      // 🚀 பேக்எண்ட் எதிர்பார்க்கும் சரியான ஸ்ட்ரக்சர்
+      // சர்வருக்கு அனுப்ப வேண்டிய தரவு அமைப்பு
       const payload = {
         subject_name: subjectName,
         unit_name: unitName,
-        questions: questions, // சர்வருக்கு 'questions' ஆகப் போகிறது
-        answers: answers,     // சர்வருக்கு 'answers' ஆகப் போகிறது
+        questions: questions, 
+        answers: answers
       };
 
       if (pdfBase64) {
@@ -71,16 +80,16 @@ if (form) {
         payload.pdf_file_name = pdfFileName;
       }
 
-      // உங்களுடைய பழைய நம்பகமான apiPost ஃபங்ஷனையே பயன்படுத்துகிறோம்
+      // நம்பகமான apiPost-ஐப் பயன்படுத்தி சர்வருக்கு அனுப்புதல்
       const res = await apiPost('/api/upload', payload, { 'X-Admin-Email': adminEmail });
       
-      showMessage(messageEl, res.message || 'Uploaded successfully.', 'success');
+      if (messageEl) showMessage(messageEl, res.message || 'Uploaded successfully.', 'success');
       form.reset();
       pdfBase64 = null;
       pdfFileName = null;
       setPill('No PDF selected');
     } catch (err) {
-      showMessage(messageEl, err.message || 'Upload failed', 'error');
+      if (messageEl) showMessage(messageEl, err.message || 'Upload failed', 'error');
     }
   });
 }
@@ -92,6 +101,6 @@ if (clearBtn) {
     pdfBase64 = null;
     pdfFileName = null;
     setPill('No PDF selected');
-    showMessage(messageEl, '', 'info');
+    if (messageEl) showMessage(messageEl, '', 'info');
   });
 }
