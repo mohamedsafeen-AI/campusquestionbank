@@ -70,25 +70,23 @@ if (form) {
      // 2. சர்வர் எதிர்பார்க்கும் அனைத்து ஃபீல்டுகளையும் அனுப்புகிறோம்
       // 2. சர்வர் எதிர்பார்க்கும் FormData முறை
 // FormData-வை இப்படித் திருத்தி அமையுங்கள்:
-const formData = new FormData();
-formData.append('subject_name', subjectName);
-formData.append('unit_name', unitName);
-
-// சர்வர் கேட்பதால் இரண்டுமே சேர்த்து அனுப்பிவிடலாம் (எந்தப் பெயர் தேவையோ அது எடுத்துக்கொள்ளும்)
-formData.append('question', questions);
-formData.append('questions', questions); 
-formData.append('answer', answers);
-formData.append('answers', answers);
-formData.append('admin_email', adminEmail);
+// upload.js-ல் இந்த பகுதியை மட்டும் மாற்றவும்:
+// 74-வது வரியிலிருந்து இதை மாற்றவும்:
+// upload.js-ல் இந்த பகுதியை மட்டும் மாற்றவும்:
+const payload = {
+    subject_name: subjectName,
+    unit_name: unitName,
+    question: questions,
+    answer: answers
+    // admin_email-ஐ நீக்கிவிட்டோம், ஏனெனில் அது ஹெடரில் ஏற்கனவே செல்கிறது!
+};
 
 if (pdfBase64) {
-    formData.append('pdf_base64', pdfBase64);
-    formData.append('pdf_file_name', pdfFileName);
+    payload.pdf_base64 = pdfBase64;
+    payload.pdf_file_name = pdfFileName;
 }
-// 3. 🚀 apiPostMultipart-ஐப் பயன்படுத்தவும் (இது FormData-வை அனுப்பும்)
-// 89-வது வரியை இப்படி மாற்றவும்:
-const res = await apiPostMultipart('https://campusquestionbank-yyz4.vercel.app/api/upload', formData, { 'X-Admin-Email': adminEmail });
-      
+// 87-வது வரியை மாற்றுங்கள்:
+const res = await apiPost('https://campusquestionbank-yyz4.vercel.app/api/upload', payload, { 'X-Admin-Email': adminEmail });
       // 4. அப்லோடு வெற்றியடைந்தால் ஃபார்மை ரீசெட் செய்கிறோம்
       if (messageEl) showMessage(messageEl, res.message || 'Uploaded successfully.', 'success');
       form.reset();
