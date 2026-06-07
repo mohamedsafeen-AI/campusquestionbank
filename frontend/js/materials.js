@@ -70,7 +70,7 @@ async function loadMaterials() {
   grid.innerHTML = '';
   emptyState.style.display = 'none';
 
-  const { materials } = await apiGet('/api/materials');
+  const { materials } = await apiGet('https://campusquestionbank-yyz4.vercel.app/api/materials');
   allMaterials = materials || [];
   renderMaterials(allMaterials);
 }
