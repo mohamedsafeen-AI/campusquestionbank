@@ -73,10 +73,14 @@ async function apiPost(path, body, extraHeaders = {}) {
   if (!res.ok) throw new Error(json.error || 'Request failed');
   return json;
 }
-async function apiPostMultipart(path, formData) {
+// 76-வது வரியிலிருந்து இப்படி மாற்றவும்:
+async function apiPostMultipart(path, formData, extraHeaders = {}) {
   const res = await fetch(apiUrl(path), {
     method: 'POST',
-    body: formData, // 🛑 இங்கு Content-Type ஹெடர் கொடுக்கக் கூடாது!
+    headers: {
+      ...extraHeaders // இதைச் சேர்த்தால் தான் அட்மின் மின்னஞ்சல் சர்வருக்குச் செல்லும்
+    },
+    body: formData, 
   });
   
   const json = await res.json().catch(() => ({}));

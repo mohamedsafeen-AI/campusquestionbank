@@ -86,7 +86,8 @@ if (pdfBase64) {
     formData.append('pdf_file_name', pdfFileName);
 }
 // 3. 🚀 apiPostMultipart-ஐப் பயன்படுத்தவும் (இது FormData-வை அனுப்பும்)
-const res = await apiPostMultipart('https://campusquestionbank-yyz4.vercel.app/api/upload', formData);
+// 89-வது வரியை இப்படி மாற்றவும்:
+const res = await apiPostMultipart('https://campusquestionbank-yyz4.vercel.app/api/upload', formData, { 'X-Admin-Email': adminEmail });
       
       // 4. அப்லோடு வெற்றியடைந்தால் ஃபார்மை ரீசெட் செய்கிறோம்
       if (messageEl) showMessage(messageEl, res.message || 'Uploaded successfully.', 'success');
