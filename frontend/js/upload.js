@@ -65,20 +65,28 @@ if (form) {
       if (!subjectName) throw new Error('Subject Name is required.');
 
       // 2. சர்வருக்கு அனுப்ப வேண்டிய தரவு அமைப்பு
-      const payload = {
-        subject_name: subjectName,
-        unit_name: unitName,
-        questions: questions, 
-        answers: answers
-      };
+      // 2. சர்வருக்கு அனுப்ப வேண்டிய தரவு அமைப்பு (கீ பெயர்களை மட்டும் கவனமாக மாற்றியுள்ளேன்)
+      // 2. சர்வர் எதிர்பார்க்கும் அனைத்து ஃபீல்டுகளையும் கச்சிதமாக அனுப்பும் பகுதி
+     // 2. சர்வர் எதிர்பார்க்கும் அனைத்து ஃபீல்டுகளையும் அனுப்புகிறோம்
+      // 2. சர்வர் எதிர்பார்க்கும் FormData முறை
+// FormData-வை இப்படித் திருத்தி அமையுங்கள்:
+const formData = new FormData();
+formData.append('subject_name', subjectName);
+formData.append('unit_name', unitName);
 
-      if (pdfBase64) {
-        payload.pdf_base64 = pdfBase64;
-        payload.pdf_file_name = pdfFileName;
-      }
+// சர்வர் கேட்பதால் இரண்டுமே சேர்த்து அனுப்பிவிடலாம் (எந்தப் பெயர் தேவையோ அது எடுத்துக்கொள்ளும்)
+formData.append('question', questions);
+formData.append('questions', questions); 
+formData.append('answer', answers);
+formData.append('answers', answers);
+formData.append('admin_email', adminEmail);
 
-      // 3. 🚀 அக்யூரேட்டான Vercel URL - மிடில்வேர் மற்றும் ட்ரை பிளாக்கிற்குள் சரியாக வைக்கப்பட்டுள்ளது!
-      const res = await apiPost('https://campusquestionbank-yyz4.vercel.app/api/upload', payload, { 'X-Admin-Email': adminEmail });
+if (pdfBase64) {
+    formData.append('pdf_base64', pdfBase64);
+    formData.append('pdf_file_name', pdfFileName);
+}
+// 3. 🚀 apiPostMultipart-ஐப் பயன்படுத்தவும் (இது FormData-வை அனுப்பும்)
+const res = await apiPostMultipart('https://campusquestionbank-yyz4.vercel.app/api/upload', formData);
       
       // 4. அப்லோடு வெற்றியடைந்தால் ஃபார்மை ரீசெட் செய்கிறோம்
       if (messageEl) showMessage(messageEl, res.message || 'Uploaded successfully.', 'success');
