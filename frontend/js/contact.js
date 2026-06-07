@@ -14,7 +14,7 @@ form.addEventListener('submit', async (e) => {
     const email = document.getElementById('email').value.trim();
     const message = document.getElementById('message').value.trim();
 
-    const res = await apiPost('/api/contact', { name, email, message });
+    const res = await apiPost('https://campusquestionbank-yyz4.vercel.app/api/contact', { name, email, message });
     showMessage(messageEl, res.message || 'Sent!', 'success');
     form.reset();
   } catch (err) {
