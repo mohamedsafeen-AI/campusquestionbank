@@ -22,9 +22,10 @@ app.use(helmet());
 // CORS: allow only the configured frontend origin
 app.use(
   cors({
-    origin: FRONTEND_ORIGIN || '*',
+    origin: 'https://campusquestionbank.netlify.app', // Variable-ai thavirthu direct-a URL-ai kudunga
     methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Admin-Email'],
+    credentials: true
   })
 );
 
